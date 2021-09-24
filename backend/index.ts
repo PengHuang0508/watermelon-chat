@@ -2,7 +2,7 @@ import express from 'express';
 import http from 'http';
 import { Server } from 'socket.io';
 import router from './router';
-import { addUser, removeUser, getUser, getUserByRoom } from 'handlers/users';
+import { addUser, removeUser, getUser, getUserByRoom } from './handlers';
 
 const PORT = process.env.PORT || 5000;
 const app = express();
@@ -15,26 +15,39 @@ io.on('connection', (socket) => {
   socket.on('join', ({ username, room }, callback) => {
     const { error, user } = addUser({ id: socket.id, username, room });
     if (error) {
-      console.log({ error });
-      // return callback(error);
+      return callback(error);
     }
 
-    socket.emit('systemMessage', {
-      user: 'Admin',
-      text: `${username} , Welcome to ${room} :)`,
-    });
+    if (user) {
+      socket.emit('message', {
+        sender: 'Admin',
+        text: `${username} , Welcome to ${room} :)`,
+      });
 
-    socket.broadcast.to(user.room).emit('systemMessage', {
-      user: 'Admin',
-      text: `${username} has joined!`,
-    });
+      socket.broadcast.to(user.room).emit('message', {
+        sender: 'Admin',
+        text: `${username} has joined!`,
+      });
 
-    socket.join(user.room);
+      socket.join(user.room);
+
+      callback();
+    }
+  });
+
+  socket.on('sendMessage', (message: string, callback) => {
+    console.log("Let's seeee");
+    const user = getUser(socket.id);
+
+    if (user) {
+      io.to(user.room).emit('message', {
+        sender: user?.username,
+        text: message,
+      });
+    }
 
     callback();
   });
-
-  socket.on('message', () => {});
 
   socket.on('disconnect', () => {
     console.log('User disconnected :(');

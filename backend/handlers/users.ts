@@ -33,7 +33,7 @@ const addUser = ({ id, username, room }: UserProps) => {
 
   users.push(newUser);
 
-  return { user };
+  return { user: newUser };
 };
 
 const removeUser = (id: string) => {
