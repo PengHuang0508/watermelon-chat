@@ -10,12 +10,12 @@ const server = http.createServer(app);
 const io = new Server(server);
 
 io.on('connection', (socket) => {
-  console.log('Connection established :)');
+  console.info('Connection established :)');
 
   socket.on('join', ({ username, room }, callback) => {
     const { error, user } = addUser({ id: socket.id, username, room });
     if (error) {
-      return callback(error);
+      return callback && callback(error);
     }
 
     if (user) {
@@ -31,12 +31,16 @@ io.on('connection', (socket) => {
 
       socket.join(user.room);
 
-      callback();
+      callback && callback();
+
+      io.to(user.room).emit('userList', {
+        room: user.room,
+        users: getUserByRoom(user.room),
+      });
     }
   });
 
   socket.on('sendMessage', (message: string, callback) => {
-    console.log("Let's seeee");
     const user = getUser(socket.id);
 
     if (user) {
@@ -44,13 +48,27 @@ io.on('connection', (socket) => {
         sender: user?.username,
         text: message,
       });
+
+      io.to(user.room).emit('userList', {
+        room: user.room,
+        users: getUserByRoom(user.room),
+      });
     }
 
-    callback();
+    callback && callback();
   });
 
   socket.on('disconnect', () => {
-    console.log('User disconnected :(');
+    console.info('User disconnected :(');
+
+    const user = removeUser(socket.id);
+
+    if (user) {
+      io.to(user.room).emit('message', {
+        user: 'Admin',
+        text: `${user.username} has left.`,
+      });
+    }
   });
 });
 

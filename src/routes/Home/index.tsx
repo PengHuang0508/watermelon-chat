@@ -1,58 +1,65 @@
 import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import Button from '@mui/material/Button';
-
-type CredentialsProps = {
-  username: string | null;
-  room: string | null;
-};
+import { JoinRoom } from 'src/components';
+import debounce from 'lodash.debounce';
+import Paper from '@mui/material/Paper';
+import bgImg from 'src/assets/images/home_background.jpg';
 
 const Home = () => {
   const history = useHistory();
-  const [credentials, setCredentials] = useState<CredentialsProps>({
-    username: null,
-    room: null,
-  });
 
-  // TODO: change after finish typing debounce
-  const handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setCredentials({
-      ...credentials,
-      username: event.target.value,
-    });
-  };
+  const [username, setUsername] = useState<string>('');
+  const [room, setRoom] = useState<string>('');
 
-  const handleRoomChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setCredentials({
-      ...credentials,
-      room: event.target.value,
-    });
-  };
+  const handleNameChange = debounce(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      setUsername(event.target.value);
+    },
+    250
+  );
+
+  const handleRoomChange = debounce(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      setRoom(event.target.value);
+    },
+    250
+  );
 
   const handleJoin = () => {
     console.log("let's join");
-    history.push({
-      pathname: '/room',
-      state: credentials,
-    });
+    // if (!username.trim())  {
+
+    // }
+    // history.push({
+    //   pathname: '/room',
+    //   state: {username, room},
+    // });
   };
+
   useEffect(() => {
-    console.log({ credentials });
-  }, [credentials]);
+    console.log({ username, room });
+  }, [username, room]);
 
   return (
-    <div>
-      <h1>Lobby</h1>
-      <div>
-        <input placeholder='Username' type='text' onChange={handleNameChange} />
-        <input placeholder='Room' type='text' onChange={handleRoomChange} />
-        <button type='submit'>Sign In</button>
-      </div>
-      <Button variant='contained' onClick={handleJoin}>
-        JOIN
-      </Button>
-    </div>
+    <Paper sx={styles.container} elevation={0} square>
+      <JoinRoom
+        handleNameChange={handleNameChange}
+        handleRoomChange={handleRoomChange}
+        handleJoin={handleJoin}
+      />
+    </Paper>
   );
 };
 
 export default Home;
+
+const styles = {
+  container: {
+    height: '100vh',
+    display: 'grid',
+    placeItems: 'center',
+    backgroundImage: `url(${bgImg})`,
+    backgroundSize: 'cover',
+  },
+};
