@@ -1,15 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import socket from 'src/sockets';
+// MUI
 import Button from '@mui/material/Button';
+import Paper from '@mui/material/Paper';
+import { RoomDrawer, Chat, SendMessage } from 'src/components';
 
 type MessageProps = {
   sender: string;
   text: string;
 };
 
+type RoomCredentialProp = {
+  username: string;
+  room: string;
+};
+
 const Room = () => {
-  const { state: credentials } = useLocation();
+  const { state: credentials } = useLocation<RoomCredentialProp>();
+  const { username = '' } = credentials;
   const [input, setInput] = useState<string>('');
   const [messages, setMessages] = useState<MessageProps[]>([]);
 
@@ -49,19 +58,16 @@ const Room = () => {
 
   console.log({ messages });
   return (
-    <div>
-      Room here
-      <div>
-        <input
-          onChange={handleInput}
-          type='text'
-          onKeyPress={(event) =>
-            event.key === 'Enter' ? handleSendMessage : null
-          }
-        />
-      </div>
-      <Button onClick={handleSendMessage}>Send</Button>
-    </div>
+    <Paper
+      //  sx={styles.container}
+      elevation={0}
+      square
+    >
+      {/* <RoomDrawer /> */}
+
+      <Chat messages={messages} username={username} />
+      <SendMessage />
+    </Paper>
   );
 };
 

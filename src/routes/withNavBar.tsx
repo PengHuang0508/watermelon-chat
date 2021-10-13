@@ -6,7 +6,7 @@ const withNavBar =
   ({ children, ...props }: { children: any; props: any }) => {
     return (
       <React.Fragment>
-        <NavBar />
+        {/* <NavBar /> */}
         <RouteComponent {...props}>{children}</RouteComponent>
       </React.Fragment>
     );

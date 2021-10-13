@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import Button from '@mui/material/Button';
 import { JoinRoom } from 'src/components';
 import debounce from 'lodash.debounce';
 import Paper from '@mui/material/Paper';
 import bgImg from 'src/assets/images/home_background.jpg';
+import { SxStylesProps } from 'src/types';
 
 const Home = () => {
   const history = useHistory();
@@ -27,19 +27,13 @@ const Home = () => {
   );
 
   const handleJoin = () => {
-    console.log("let's join");
-    // if (!username.trim())  {
-
-    // }
-    // history.push({
-    //   pathname: '/room',
-    //   state: {username, room},
-    // });
+    if (!username.trim()) {
+    }
+    history.push({
+      pathname: '/room',
+      state: { username, room },
+    });
   };
-
-  useEffect(() => {
-    console.log({ username, room });
-  }, [username, room]);
 
   return (
     <Paper sx={styles.container} elevation={0} square>
@@ -54,7 +48,7 @@ const Home = () => {
 
 export default Home;
 
-const styles = {
+const styles: SxStylesProps = {
   container: {
     height: '100vh',
     display: 'grid',

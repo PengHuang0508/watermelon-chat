@@ -5,7 +5,7 @@ import Typography from '@mui/material/Typography';
 const NavBar = () => {
   return (
     <AppBar>
-      <Typography variant='h3'>🌞</Typography>
+      <Typography variant='h3'>🍉</Typography>
     </AppBar>
   );
 };
