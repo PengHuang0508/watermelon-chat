@@ -19,7 +19,7 @@ type RoomCredentialProp = {
 const Room = () => {
   const { state: credentials } = useLocation<RoomCredentialProp>();
   const { username = '' } = credentials;
-  const [input, setInput] = useState<string>('');
+  const [newMessage, setNewMessage] = useState<string>('');
   const [messages, setMessages] = useState<MessageProps[]>([]);
 
   useEffect(() => {
@@ -40,19 +40,21 @@ const Room = () => {
   }, [messages]);
 
   const handleInput = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setInput(event.target.value);
+    setNewMessage(event.target.value);
   };
 
-  // TODO: update type
-  const handleKeyPress = (event: any) => {
+  // // TODO: update type
+  // const handleKeyPress = (event: React.KeyboardEvent<HTMLDivElement>) => {
+  //   return event.key === 'Enter' ? handleSendMessage() : null;
+  // };
+
+  const handleSendMessage = (event: React.SyntheticEvent) => {
     event.preventDefault();
-    return event.key === 'Enter' ? handleSendMessage() : null;
-  };
 
-  const handleSendMessage = () => {
-    if (input) {
+    if (newMessage) {
       console.log('sending');
-      socket.emit('sendMessage', input, () => setInput(''));
+      // socket.emit('sendMessage', newMessage, () => setNewMessage(''));
+      console.log({ newMessage });
     }
   };
 
@@ -66,7 +68,11 @@ const Room = () => {
       {/* <RoomDrawer /> */}
 
       <Chat messages={messages} username={username} />
-      <SendMessage />
+      <SendMessage
+        onInput={handleInput}
+        // onKeyPress={handleKeyPress}
+        onSend={handleSendMessage}
+      />
     </Paper>
   );
 };

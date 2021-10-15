@@ -52,7 +52,9 @@ export default Chat;
 
 const styles: SxStylesProps = {
   container: {
-    maxHeight: 300,
+    // maxHeight: 300,
+    flex: 1,
+    background: 'red',
     overflow: 'auto',
   },
 };
