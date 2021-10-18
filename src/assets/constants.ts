@@ -1,0 +1,1 @@
+export const SEND_MESSAGE_BAR_HEIGHT = 60;

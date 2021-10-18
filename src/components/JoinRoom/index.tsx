@@ -17,7 +17,14 @@ const JoinRoom: FC<JoinRoomProps> = ({
   handleJoin,
 }) => {
   return (
-    <Box maxWidth='lg' sx={styles.container}>
+    <Box
+      sx={styles.container}
+      component='form'
+      maxWidth='lg'
+      autoComplete='off'
+      onSubmit={handleJoin}
+      noValidate
+    >
       <Container sx={styles.headerContainer}>
         <Typography sx={styles.title} variant='h5'>
           Summer, Friends, and Watermelons!
@@ -43,9 +50,9 @@ const JoinRoom: FC<JoinRoomProps> = ({
       <Container sx={styles.joinBtnWrapper}>
         <Button
           sx={styles.joinBtn}
-          onClick={handleJoin}
           variant='contained'
           color='secondary'
+          type='submit'
           fullWidth
         >
           JOIN

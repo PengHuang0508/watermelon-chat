@@ -2,10 +2,12 @@ import React, { FC } from 'react';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
+import { common, lightBlue } from '@mui/material/colors';
 import { SxStylesProps } from 'src/types';
 import { SendMessageProps } from './types';
+import { SEND_MESSAGE_BAR_HEIGHT } from 'src/assets/constants';
 
-const SendMessage: FC<SendMessageProps> = ({ onInput, onSend }) => {
+const SendMessage: FC<SendMessageProps> = ({ message, onInput, onSend }) => {
   return (
     <Box
       sx={styles.container}
@@ -18,8 +20,9 @@ const SendMessage: FC<SendMessageProps> = ({ onInput, onSend }) => {
     >
       <TextField
         sx={styles.inputField}
-        placeholder='Type here'
+        value={message}
         onChange={onInput}
+        placeholder='Type here'
         fullWidth
       />
       <Button
@@ -39,15 +42,21 @@ export default SendMessage;
 const styles: SxStylesProps = {
   container: {
     width: '100%',
+    height: SEND_MESSAGE_BAR_HEIGHT,
     display: 'flex',
     alignItems: 'center',
-    pb: 2,
+    py: 2,
+    borderTopLeftRadius: 12,
+    borderTopRightRadius: 12,
+    backgroundColor: lightBlue[50],
   },
   inputField: {
+    flex: 1,
     mx: 2,
   },
   btn: {
-    mx: 1,
     height: '50%',
+    mr: 2,
+    color: common.white,
   },
 };

@@ -6,6 +6,9 @@ import Button from '@mui/material/Button';
 import Paper from '@mui/material/Paper';
 import { RoomDrawer, Chat, SendMessage } from 'src/components';
 
+import { indigo, lightBlue } from '@mui/material/colors';
+
+import { SxStylesProps } from 'src/types';
 type MessageProps = {
   sender: string;
   text: string;
@@ -18,13 +21,13 @@ type RoomCredentialProp = {
 
 const Room = () => {
   const { state: credentials } = useLocation<RoomCredentialProp>();
-  const { username = '' } = credentials;
+  const { username = '', room } = credentials;
   const [newMessage, setNewMessage] = useState<string>('');
   const [messages, setMessages] = useState<MessageProps[]>([]);
 
   useEffect(() => {
     socket.emit('join', credentials, () => {
-      console.log('Joined room!');
+      console.info(`[System] User ${username} joined room ${room}`);
     });
 
     return () => {
@@ -43,34 +46,22 @@ const Room = () => {
     setNewMessage(event.target.value);
   };
 
-  // // TODO: update type
-  // const handleKeyPress = (event: React.KeyboardEvent<HTMLDivElement>) => {
-  //   return event.key === 'Enter' ? handleSendMessage() : null;
-  // };
-
   const handleSendMessage = (event: React.SyntheticEvent) => {
     event.preventDefault();
 
     if (newMessage) {
-      console.log('sending');
-      // socket.emit('sendMessage', newMessage, () => setNewMessage(''));
-      console.log({ newMessage });
+      socket.emit('sendMessage', newMessage, () => setNewMessage(''));
     }
   };
 
-  console.log({ messages });
   return (
-    <Paper
-      //  sx={styles.container}
-      elevation={0}
-      square
-    >
+    <Paper sx={styles.container} elevation={0} square>
       {/* <RoomDrawer /> */}
 
       <Chat messages={messages} username={username} />
       <SendMessage
+        message={newMessage}
         onInput={handleInput}
-        // onKeyPress={handleKeyPress}
         onSend={handleSendMessage}
       />
     </Paper>
@@ -78,3 +69,10 @@ const Room = () => {
 };
 
 export default Room;
+
+const styles: SxStylesProps = {
+  container: {
+    height: '100vh',
+    backgroundColor: lightBlue.A100,
+  },
+};
